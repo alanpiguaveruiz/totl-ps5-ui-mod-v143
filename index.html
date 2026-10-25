@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Generador de comandos para el manifest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--panel:#fff;--ink:#17202b;--mut:#5a6675;--line:#d5dce4;--acc:#1f5fd6;--accink:#fff;--ok:#16794a;--code:#0e141b;--codeink:#d8e4f2;--codemut:#7d8da1;--field:#f7f9fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151b;--panel:#18202a;--ink:#e5ebf2;--mut:#93a0b0;--line:#2a3542;--acc:#7ea6ff;--accink:#0c1524;--ok:#58d39a;--field:#121922}}
+:root[data-theme="dark"]{--bg:#10151b;--panel:#18202a;--ink:#e5ebf2;--mut:#93a0b0;--line:#2a3542;--acc:#7ea6ff;--accink:#0c1524;--ok:#58d39a;--field:#121922}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 48px}
+h1{font-size:clamp(1.5rem,3.4vw,2.1rem);line-height:1.2;margin:0 0 6px;font-weight:600;letter-spacing:-.01em}
+.lead{margin:0 0 26px;color:var(--mut);max-width:62ch}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+.f{margin-bottom:16px}
+.f label{display:block;font-weight:500;margin-bottom:2px}
+.f small{display:block;color:var(--mut);font-size:.84rem;margin-bottom:6px}
+input[type=text],select{width:100%;font:inherit;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.88rem;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+input[type=text]:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chk{display:flex;gap:9px;align-items:flex-start;margin:4px 0 0}
+.chk input{margin-top:5px}
+.chk span{font-size:.92rem}
+.step{margin-bottom:20px}
+.step:last-child{margin-bottom:0}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px}
+.sh h2{font-size:1rem;margin:0;font-weight:600}
+.n{display:inline-block;min-width:1.5em;color:var(--acc);font-weight:600}
+.note{color:var(--mut);font-size:.88rem;margin:6px 0 0}
+pre{margin:0;background:var(--code);color:var(--codeink);border-radius:8px;padding:12px 14px;overflow-x:auto;font:400 .84rem/1.6 "IBM Plex Mono",ui-monospace,Menlo,monospace;white-space:pre}
+.c{color:var(--codemut)}
+button{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:4px 11px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.main{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:500;padding:8px 16px;font-size:.95rem}
+button.done{color:var(--ok);border-color:var(--ok)}
+.all{display:flex;align-items:center;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.all span{color:var(--mut);font-size:.88rem}
+@media (prefers-reduced-motion:no-preference){button{transition:border-color .15s,color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Comandos para instalar un mod y generar su manifest</h1>
+  <p class="lead">Escribe dónde está cada cosa en tu Mac. Los comandos de la derecha se arman solos: cópialos y pégalos en Terminal.</p>
+  <div class="grid">
+    <section class="card" aria-label="Rutas">
+      <div class="f"><label for="src">Carpeta del mod ya descomprimido</label>
+        <small>La que tiene la carpeta <code>romfs</code> dentro. Si arrastras la carpeta desde Finder a este campo, también funciona.</small>
+        <input type="text" id="src" spellcheck="false" autocomplete="off"></div>
+      <div class="f"><label for="repo">Carpeta de MacNativeGames</label>
+        <small>La del proyecto, donde está <code>games/totk/scripts</code>.</small>
+        <input type="text" id="repo" spellcheck="false" autocomplete="off"></div>
+      <div class="f"><label for="app">La app compilada</label>
+        <small>Termina en <code>.app</code>.</small>
+        <input type="text" id="app" spellcheck="false" autocomplete="off"></div>
+      <div class="f"><label for="mods">Carpeta de mods</label>
+        <small>Donde MacNativeGames lee los mods de TOTK.</small>
+        <input type="text" id="mods" spellcheck="false" autocomplete="off"></div>
+      <div class="row2">
+        <div class="f"><label for="ver">Versión del juego</label>
+          <small>Es el nombre de la subcarpeta.</small>
+          <select id="ver"><option>v143</option><option>v121</option><option>v112</option><option>v0</option></select></div>
+        <div class="f"><label for="py">Comando de Python</label>
+          <small>El que usas para compilar.</small>
+          <input type="text" id="py" spellcheck="false" autocomplete="off"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="bak" checked><span>Guardar en el Escritorio una copia de la carpeta de mods actual antes de reemplazarla</span></label>
+    </section>
+
+    <section class="card" aria-label="Comandos" aria-live="polite">
+      <div class="step">
+        <div class="sh"><h2><span class="n">1</span>Copiar el mod</h2><button data-t="o1">Copiar</button></div>
+        <pre id="o1"></pre>
+        <p class="note">Deja la carpeta de la versión vacía antes de copiar, para que no se mezclen mods.</p>
+      </div>
+      <div class="step">
+        <div class="sh"><h2><span class="n">2</span>Generar el manifest</h2><button data-t="o2">Copiar</button></div>
+        <pre id="o2"></pre>
+        <p class="note">Pégalo en la misma ventana de Terminal que el paso 1. Al final debe decir cuántos archivos reemplazó. Con el mod PS5 de TOTK: 6 replaced y 0 added.</p>
+      </div>
+      <div class="step">
+        <div class="sh"><h2><span class="n">3</span>Si el juego se cierra</h2><button data-t="o3">Copiar</button></div>
+        <pre id="o3"></pre>
+        <p class="note">Muestra las últimas líneas del registro del juego. Pégalas cuando pidas ayuda.</p>
+      </div>
+      <div class="all"><button class="main" id="all">Copiar los tres pasos</button><span id="msg"></span></div>
+    </section>
+  </div>
+</div>
+<script>
+(function(){
+var KEY="manifest-gen-v1";
+var D={src:"~/Downloads/Simple_PS5_UI_v143_v2",repo:"~/MacNativeGames",app:"~/Tears of the Kingdom.app",mods:"~/Library/Application Support/MacNativeGames/TOTK/mods",ver:"v143",py:"python3.14",bak:true};
+var ids=["src","repo","app","mods","ver","py","bak"];
+function el(i){return document.getElementById(i)}
+function load(){var s={};try{s=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}return s}
+function save(){var s={};ids.forEach(function(i){s[i]=i==="bak"?el(i).checked:el(i).value});try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function norm(p){return p.trim().replace(/^["']|["']$/g,"").replace(/\\(.)/g,"$1").replace(/\/+$/,"")}
+function q(p,slash){p=norm(p);var pre="";
+  if(p==="~"||p.indexOf("~/")===0){pre="$HOME";p=p.slice(1)}
+  else if(p.indexOf("$HOME")===0){pre="$HOME";p=p.slice(5)}
+  p=p.replace(/(["\\`$])/g,"\\$1");
+  return '"'+pre+p+(slash?"/":"")+'"'}
+function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function build(){
+  var v=function(i){return el(i).value};
+  var src=norm(v("src"))||"~/RUTA/DEL/MOD"; if(!/\/romfs$/.test(src))src+="/romfs";
+  var py=/^[\w.\/-]+$/.test(v("py").trim())?v("py").trim():"python3";
+  var ver=v("ver");
+  var old=el("bak").checked
+    ?'[ -d "$M/$V" ] && mv "$M/$V" "$HOME/Desktop/${V}_respaldo_$(date +%Y%m%d_%H%M%S)"'
+    :'rm -rf "$M/$V"';
+  var o1=["M="+q(v("mods")||D.mods),"V="+ver,old,'mkdir -p "$M/$V" && rsync -a '+q(src,true)+' "$M/$V"/','ls "$M/$V"'].join("\n");
+  var o2="cd "+q(v("repo")||D.repo)+" && "+py+' games/totk/scripts/make_mod_manifest.py "$M/$V" --app '+q(v("app")||D.app);
+  var o3="grep -v AllocateMemoryPages ~/Library/Logs/MacNativeGames/totk.log | tail -30";
+  return [o1,o2,o3]}
+function render(){var o=build();["o1","o2","o3"].forEach(function(id,i){el(id).textContent=o[i]})}
+function flash(b,txt){var t=b.textContent;b.textContent=txt;b.classList.add("done");setTimeout(function(){b.textContent=t;b.classList.remove("done")},1400)}
+function copy(text,b){
+  function fb(){var a=document.createElement("textarea");a.value=text;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(a);flash(b,ok?"Copiado":"Selecciona y copia")}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){flash(b,"Copiado")},fb)}else fb()}
+var s=load();
+ids.forEach(function(i){var val=(i in s)?s[i]:D[i];if(i==="bak")el(i).checked=!!val;else el(i).value=val;
+  el(i).addEventListener("input",function(){render();save()});el(i).addEventListener("change",function(){render();save()})});
+document.querySelectorAll("button[data-t]").forEach(function(b){b.addEventListener("click",function(){copy(el(b.dataset.t).textContent,b)})});
+el("all").addEventListener("click",function(){copy(build().join("\n\n"),el("all"))});
+render();
+})();
+</script>
+</body>
+</html>

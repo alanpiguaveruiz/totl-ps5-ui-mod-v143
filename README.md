@@ -35,10 +35,7 @@ Los botones se asignan **por posición física**, igual que hacen los mandos Pla
 2. Copia el **contenido** de `romfs/` (no la carpeta `romfs` en sí) a:
    `~/Library/Application Support/MacNativeGames/TOTK/mods/v143`
    Debe quedar con las carpetas `Font`, `System` y `UI`. Si ya tienes otro mod ahí, muévelo antes para que no se mezclen.
-   Por terminal, desde la carpeta donde descomprimiste:
-   ```
-   rsync -a Simple_PS5_UI_v143_v2/romfs/ ~/Library/Application\ Support/MacNativeGames/TOTK/mods/v143/
-   ```
+ 
 3. Genera el manifest desde la carpeta del proyecto:
    ```
    cd ~/MacNativeGames && python3.14 games/totk/scripts/make_mod_manifest.py ~/Library/Application\ Support/MacNativeGames/TOTK/mods/v143 --app "$HOME/Tears of the Kingdom.app"

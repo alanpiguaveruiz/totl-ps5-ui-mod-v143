@@ -42,6 +42,8 @@ Los botones se asignan **por posición física**, igual que hacen los mandos Pla
    ```
    Debe decir **6 files (6 replaced, 0 added)**.
 4. Si recompilas la app, vuelve a generar el manifest.
+5. 
+**Asistente de script:** si no sabes cómo armar estos comandos, hay una [página que los genera por ti](https://alanpiguaveruiz.github.io/totl-ps5-ui-mod-v143/). Escribes dónde está cada carpeta y te da el script listo para pegar en Terminal, incluido el manifest.
 
 ### Emuladores
 
